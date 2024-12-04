@@ -1,17 +1,99 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import ReactFontLoader from "react-font-loader";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
+import { SecuredApp, SecuredRoute } from "./context";
+import Login from "./pages/login";
+import Register from "./pages/registry";
+import Movies from "./pages/movies";
+import Movie from "./pages/movie";
+import EditMovie from "./pages/edit-movie";
+import CreateMovie from "./pages/create-movie";
+import Profile from "./pages/profile";
+import Friends from "./pages/friends";
+import NotFound from "./pages/not-found";
+
+import "./styles.css";
+
+ReactDOM.render(
   <React.StrictMode>
-    <App />
-  </React.StrictMode>
+    <SecuredApp>
+      <ReactFontLoader url="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" />
+      <ReactFontLoader url="https://fonts.googleapis.com/css2?family=Modak&display=swap" />
+      <ReactFontLoader url="https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap" />
+      <Router>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route
+            path="/movies/new"
+            element={
+              <SecuredRoute>
+                <CreateMovie />
+              </SecuredRoute>
+            }
+          />
+          <Route
+            path="/movies/:id/edit"
+            element={
+              <SecuredRoute>
+                <EditMovie />
+              </SecuredRoute>
+            }
+          />
+          <Route
+            path="/movies/:id"
+            element={
+              <SecuredRoute>
+                <Movie />
+              </SecuredRoute>
+            }
+          />
+          <Route
+            path="/movies"
+            element={
+              <SecuredRoute>
+                <Movies />
+              </SecuredRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <SecuredRoute>
+                <Profile />
+              </SecuredRoute>
+            }
+          />
+          <Route
+            path="/friends"
+            element={
+              <SecuredRoute>
+                <Friends />
+              </SecuredRoute>
+            }
+          />
+          <Route
+            path="/404"
+            element={
+              <SecuredRoute>
+                <NotFound />
+              </SecuredRoute>
+            }
+          />
+          {/* Redirect to /movies from the root */}
+          <Route path="/" element={<Navigate to="/movies" />} />
+          {/* Catch-all route for 404 */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Router>
+    </SecuredApp>
+  </React.StrictMode>,
+  document.getElementById("root")
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
