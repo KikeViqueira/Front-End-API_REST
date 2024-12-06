@@ -13,7 +13,7 @@ export default class API {
 
   async login(email, pass) {
     try {
-      const response = await fetch("http://192.168.172.86:8080/login", {
+      const response = await fetch("http://localhost:8080/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -68,16 +68,13 @@ export default class API {
       console.log("API findMovies - Params:", params.toString());
       console.log("API findMovies - Token:", token);
 
-      const response = await fetch(
-        `http://192.168.172.86:8080/movies?${params}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: token,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(`http://localhost:8080/movies?${params}`, {
+        method: "GET",
+        headers: {
+          Authorization: token,
+          "Content-Type": "application/json",
+        },
+      });
 
       if (!response.ok) {
         throw new Error("Error al obtener las películas");
@@ -100,7 +97,7 @@ export default class API {
     const token = localStorage.getItem("token");
 
     try {
-      const response = await fetch(`http://192.168.172.86:8080/movies/${id}`, {
+      const response = await fetch(`http://localhost:8080/movies/${id}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -122,7 +119,7 @@ export default class API {
     try {
       const token = localStorage.getItem("token");
       console.log(token);
-      const response = await fetch(`http://192.168.172.86:8080/users/${id}`, {
+      const response = await fetch(`http://localhost:8080/users/${id}`, {
         method: "GET",
         headers: {
           Authorization: token,
@@ -160,7 +157,7 @@ export default class API {
 
       console.log("MOVIE: ", movie);
       const response = await fetch(
-        `http://192.168.172.86:8080/comments/movie/${movie}`,
+        `http://localhost:8080/comments/movie/${movie}`,
         {
           method: "GET",
           headers: {
@@ -187,7 +184,7 @@ export default class API {
   async createComment(comment) {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://192.168.172.86:8080/comments", {
+      const response = await fetch("http://localhost:8080/comments", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -213,5 +210,71 @@ export default class API {
 
   async updateUser(id, user) {
     console.log(user);
+  }
+
+  async updateMovie(id, patches) {
+    console.log("Patches en la api:", JSON.stringify(patches));
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`http://localhost:8080/movies/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+        body: JSON.stringify(patches),
+      });
+
+      if (!response.ok) {
+        throw new Error("Error al actualizar la película");
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("Error al actualizar película:", error);
+      throw error;
+    }
+  }
+
+  async addFriend(userId) {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`http://localhost:8080/friends/${userId}`, {
+        method: "POST",
+        headers: {
+          Authorization: token,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Error al añadir amigo");
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("Error al añadir amigo:", error);
+      throw error;
+    }
+  }
+
+  async removeFriend(userId) {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`http://localhost:8080/friends/${userId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: token,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Error al eliminar amigo");
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("Error al eliminar amigo:", error);
+      throw error;
+    }
   }
 }

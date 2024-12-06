@@ -173,11 +173,17 @@ function AppMenu() {
               <span className="text-xs font-bold">{email}</span>
             </span>
 
-            <img
-              className="h-12 w-12 rounded-full shadow"
-              alt="profile icon"
-              src={picture}
-            />
+            {picture ? (
+              <img
+                className="h-12 w-12 rounded-full shadow"
+                alt="profile icon"
+                src={picture}
+              />
+            ) : (
+              <div className="h-12 w-12 rounded-full bg-gray-400 shadow flex items-center justify-center">
+                <Profile className="h-8 w-8 text-white" />
+              </div>
+            )}
           </Menu.Button>
           <Transition
             show={open}

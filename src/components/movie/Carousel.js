@@ -41,11 +41,6 @@ export function Carousel({ query = {} }) {
     return () => clearInterval(listener);
   }, []);
 
-  if (!movieList || movieList.length === 0) {
-    console.log("No movies to display");
-    return null;
-  }
-
   console.log("Rendering carousel with", movieList.length, "movies");
   console.log("Active movie:", movieList[activeIndex]);
 

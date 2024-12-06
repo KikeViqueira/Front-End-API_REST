@@ -2,6 +2,10 @@ import { useParams } from "react-router-dom";
 import { CircleChevronLeft as Back, Pencil as Edit } from "lucide-react";
 import ReactPlayer from "react-player";
 import { useState } from "react";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import "./carousel.css";
 
 import { Shell, Link, TODO, Separator } from "../../components";
 
@@ -28,7 +32,7 @@ const poster = (movie) =>
 
 export default function Movie() {
   const { id } = useParams();
-  const movie = useMovie(id);
+  const { movie, update } = useMovie(id);
 
   return (
     <Shell>
@@ -176,33 +180,62 @@ function Comments({ movie }) {
   };
 
   return (
-    <div className="mt-16">
-      <div>
+    <div className="mt-16 max-w-full mx-auto">
+      <h2 className="mt-16 font-bold text-2xl">Comentarios</h2>
+      <Separator />
+      <div className="space-y-8">
         <div>
           {comments._embedded === undefined ||
           comments._embedded.assessmentList === undefined ||
           comments._embedded.assessmentList.length === 0 ? (
-            <p>No hay comentarios por ahora en esta película</p>
+            <p className="text-gray-500 text-center italic">
+              No hay comentarios por ahora en esta película
+            </p>
           ) : (
-            comments._embedded.assessmentList.map((comment) => {
-              console.log(comment);
-              return (
-                <div>
-                  <p>
-                    <strong>{comment.user.email}</strong>
-                  </p>
-                  <p>{comment.comment}</p>
-                </div>
-              );
-            })
+            <div className="relative">
+              <Slider
+                dots={true}
+                infinite={true}
+                speed={500}
+                slidesToShow={1}
+                slidesToScroll={1}
+                autoplay={true}
+                autoplaySpeed={5000}
+                arrows={true}
+                className="comments-carousel"
+              >
+                {comments._embedded.assessmentList.map((comment, index) => (
+                  <div key={index} className="px-4 py-2">
+                    <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 mx-2 h-[200px] flex flex-col justify-between">
+                      <div>
+                        <p className="mb-2">
+                          <strong className="text-indigo-600">
+                            {comment.user.email}
+                          </strong>
+                        </p>
+                        <p className="text-gray-700 leading-relaxed line-clamp-4">
+                          {comment.comment}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </Slider>
+            </div>
           )}
-          <form>
+          <form className="mt-12 flex flex-col items-end">
             <textarea
+              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 min-h-[120px] resize-none transition duration-200"
               value={newComment}
               onChange={handleCommentChange}
               placeholder="Escribe aqui tu comentario y comparte tu opinión con otros usuarios! Pero por favor, evita hacer spoilers..."
             ></textarea>
-            <button onClick={handleSubmit}>Publicar</button>
+            <button
+              onClick={handleSubmit}
+              className="mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition duration-200 font-medium "
+            >
+              Publicar
+            </button>
           </form>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 import API from "../api";
 
@@ -36,7 +36,18 @@ export function useMovie(id = "") {
     API.instance().findMovie(id).then(setData);
   }, [id]);
 
-  return data;
+  const update = async (movieData) => {
+    try {
+      const updatedMovie = await API.instance().updateMovie(id, movieData);
+      setData(updatedMovie);
+      return updatedMovie;
+    } catch (error) {
+      console.error("Error updating movie:", error);
+      throw error;
+    }
+  };
+
+  return { movie: data, update };
 }
 
 export function useUser(id = null) {
@@ -121,5 +132,45 @@ export function useComments(query = {}) {
   return {
     comments: data,
     createComment: create,
+  };
+}
+
+/**
+ * Hook para obtener la lista de amigos de un usuario.
+ *
+ * @returns {
+ *   friends: Usuario[], // Lista de amigos del usuario
+ *   loading: boolean, // Indica si se esta cargando la lista de amigos
+ *   error: string | null, // Error al cargar la lista de amigos
+ *   addFriend: (userId: string) => Promise<void>, // Agrega un amigo a la lista de amigos
+ *   removeFriend: (userId: string) => Promise<void>, // Elimina un amigo de la lista de amigos
+ *   refresh: () => Promise<void>, // Refresca la lista de amigos
+ * }
+ */
+export function useFriends() {
+  const [error, setError] = useState(null);
+
+  const addFriend = async (userId) => {
+    try {
+      const api = new API();
+      await api.addFriend(userId);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const removeFriend = async (userId) => {
+    try {
+      const api = new API();
+      await api.removeFriend(userId);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  return {
+    error,
+    addFriend,
+    removeFriend,
   };
 }

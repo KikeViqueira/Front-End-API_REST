@@ -1,0 +1,36 @@
+.comments-carousel .slick-prev,
+.comments-carousel .slick-next {
+  z-index: 10;
+  width: 30px;
+  height: 30px;
+}
+
+.comments-carousel .slick-prev {
+  left: -35px;
+}
+
+.comments-carousel .slick-next {
+  right: -35px;
+}
+
+.comments-carousel .slick-prev:before,
+.comments-carousel .slick-next:before {
+  color: #4f46e5;
+  font-size: 30px;
+}
+
+.comments-carousel .slick-dots {
+  bottom: -40px;
+}
+
+.comments-carousel .slick-dots li button:before {
+  color: #4f46e5;
+}
+
+.comments-carousel .slick-dots li.slick-active button:before {
+  color: #4f46e5;
+}
+
+.comments-carousel .slick-slide {
+  padding: 10px;
+}

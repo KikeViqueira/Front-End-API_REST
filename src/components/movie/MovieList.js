@@ -35,8 +35,6 @@ export function MovieList({
     setPage((page) => page - 1);
   };
 
-  if (!movieList || movieList.length === 0) return null;
-
   return (
     <section className={`p-4 w-full mx-auto ${className}`}>
       {title !== "" ? (
