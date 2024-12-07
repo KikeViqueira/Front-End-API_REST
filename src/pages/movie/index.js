@@ -7,7 +7,8 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "./carousel.css";
 
-import { Shell, Link, TODO, Separator } from "../../components";
+import Rating from "../../components/Rating";
+import { Shell, Link, Separator } from "../../components";
 
 import { useMovie, useComments } from "../../hooks";
 
@@ -40,12 +41,12 @@ export default function Movie() {
         style={{ height: "36rem" }}
         src={backdrop(movie)}
         alt={`${movie.title} backdrop`}
-        className="absolute top-2 left-0 right-0 w-full object-cover filter blur transform scale-105"
+        className="absolute left-0 right-0 object-cover w-full transform scale-105 top-2 filter blur"
       />
 
       <Link
         variant="primary"
-        className="rounded-full absolute text-white top-4 left-8 flex items-center pl-2 pr-4 py-2 gap-4"
+        className="absolute flex items-center gap-4 py-2 pl-2 pr-4 text-white rounded-full top-4 left-8"
         to="/"
       >
         <Back className="w-8 h-8" />
@@ -54,13 +55,13 @@ export default function Movie() {
 
       <Link
         variant="primary"
-        className="rounded-full absolute text-white top-4 right-8 flex items-center px-2 py-2 gap-4"
+        className="absolute flex items-center gap-4 px-2 py-2 text-white rounded-full top-4 right-8"
         to={`/movies/${id}/edit`}
       >
         <Edit className="w-8 h-8" />
       </Link>
 
-      <div className="mx-auto w-full max-w-screen-2xl p-8">
+      <div className="w-full p-8 mx-auto max-w-screen-2xl">
         <Header movie={movie} />
         <Info movie={movie} />
         <View movie={movie} />
@@ -73,12 +74,12 @@ export default function Movie() {
 
 function Header({ movie }) {
   return (
-    <header className="mt-64 relative flex items-end pb-8 mb-8">
+    <header className="relative flex items-end pb-8 mt-64 mb-8">
       <img
         style={{ aspectRatio: "2/3" }}
         src={poster(movie)}
         alt={`${movie.title} poster`}
-        className="w-64 rounded-lg shadow-xl z-20"
+        className="z-20 w-64 rounded-lg shadow-xl"
       />
       <hgroup className="flex-1">
         <h1
@@ -97,10 +98,10 @@ function Info({ movie }) {
   return (
     <div className="grid grid-cols-5 gap-4">
       <div className="col-span-4">
-        <h2 className="font-bold text-2xl text-white bg-gradient-to-br from-pink-500 via-red-500 to-yellow-500 p-4 shadow">
+        <h2 className="p-4 text-2xl font-bold text-white shadow bg-gradient-to-br from-pink-500 via-red-500 to-yellow-500">
           Argumento
         </h2>
-        <p className="pt-8 p-4">{movie.overview}</p>
+        <p className="p-4 pt-8">{movie.overview}</p>
       </div>
       <div className="text-right">
         <dl className="space-y-2">
@@ -120,14 +121,14 @@ function Info({ movie }) {
 function View({ movie }) {
   return (
     <div className="flex gap-4 mt-8">
-      <div className="w-80 z-10">
+      <div className="z-10 w-80">
         <Links movie={movie} />
       </div>
       <div
         style={{
           aspectRatio: "16/9",
         }}
-        className="flex-1 ml-8 mt-8 bg-pattern-2 flex items-center justify-center z-20"
+        className="z-20 flex items-center justify-center flex-1 mt-8 ml-8 bg-pattern-2"
       >
         <Trailer movie={movie} />
       </div>
@@ -137,9 +138,9 @@ function View({ movie }) {
 function Cast({ movie }) {
   return (
     <>
-      <h2 className="mt-16 font-bold text-2xl">Reparto principal</h2>
+      <h2 className="mt-16 text-2xl font-bold">Reparto principal</h2>
       <Separator />
-      <ul className="w-full grid grid-cols-10 gap-2 overflow-hidden">
+      <ul className="grid w-full grid-cols-10 gap-2 overflow-hidden">
         {movie?.cast?.slice(0, 10).map((person) => (
           <CastMember key={person.name} person={person} />
         ))}
@@ -152,10 +153,11 @@ function Comments({ movie }) {
     filter: { movie: movie.id },
   });
 
-  console.log("Comments embedded", comments);
-
   //Definimos el estado para guardar el comentario del user
   const [newComment, setNewComment] = useState("");
+
+  //Definimos el estado para guardar el rating que le asigna el user a la película
+  const [newRating, setNewRating] = useState(0);
 
   //Funcion para manejar el cambio de texto en el formulario
   const handleCommentChange = (e) => {
@@ -164,6 +166,7 @@ function Comments({ movie }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    //Si el comentario que se quiere publicar no está vacío llamamos a la función del hook para crear el comentario
     if (newComment != "") {
       const user = sessionStorage.getItem("user");
       console.log(user);
@@ -172,26 +175,49 @@ function Comments({ movie }) {
           id: movie.id,
           title: movie.title,
         },
-
         comment: newComment,
+        rating: newRating, //Incluimos la valoración en el comentario
       });
       setNewComment("");
+      setNewRating(0);
     }
   };
 
   return (
-    <div className="mt-16 max-w-full mx-auto">
-      <h2 className="mt-16 font-bold text-2xl">Comentarios</h2>
+    <div className="max-w-full mx-auto mt-16">
+      <h2 className="mt-16 text-2xl font-bold">Comentarios</h2>
       <Separator />
       <div className="space-y-8">
         <div>
           {comments._embedded === undefined ||
           comments._embedded.assessmentList === undefined ||
           comments._embedded.assessmentList.length === 0 ? (
-            <p className="text-gray-500 text-center italic">
+            <p className="italic text-center text-gray-500">
               No hay comentarios por ahora en esta película
             </p>
+          ) : comments._embedded.assessmentList.length === 1 ? (
+            //Mostrar el comentario si solo hay uno y asi evitar repeticiones innecesarias del propio componente Slider cuando se da este caso
+            <div className="px-4 py-2">
+              <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 mx-2 h-[200px] flex flex-col justify-between">
+                <div>
+                  <div className="flex flex-row justify-between">
+                    <p className="mb-2">
+                      <strong className="text-indigo-600">
+                        {comments._embedded.assessmentList[0].user.email}
+                      </strong>
+                    </p>
+                    <Rating
+                      rating={comments._embedded.assessmentList[0].rating}
+                    />
+                  </div>
+                  <p className="leading-relaxed text-gray-700 line-clamp-4">
+                    {comments._embedded.assessmentList[0].comment}
+                  </p>
+                </div>
+              </div>
+            </div>
           ) : (
+            //Mostrar el carousel si hay múltiples comentarios de la película
             <div className="relative">
               <Slider
                 dots={true}
@@ -208,12 +234,15 @@ function Comments({ movie }) {
                   <div key={index} className="px-4 py-2">
                     <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 mx-2 h-[200px] flex flex-col justify-between">
                       <div>
-                        <p className="mb-2">
-                          <strong className="text-indigo-600">
-                            {comment.user.email}
-                          </strong>
-                        </p>
-                        <p className="text-gray-700 leading-relaxed line-clamp-4">
+                        <div className="flex flex-row justify-between">
+                          <p className="mb-2">
+                            <strong className="text-indigo-600">
+                              {comment.user.email}
+                            </strong>
+                          </p>
+                          <Rating rating={comment.rating} />
+                        </div>
+                        <p className="leading-relaxed text-gray-700 line-clamp-4">
                           {comment.comment}
                         </p>
                       </div>
@@ -223,16 +252,24 @@ function Comments({ movie }) {
               </Slider>
             </div>
           )}
-          <form className="mt-12 flex flex-col items-end">
+          <form className="flex flex-col items-end mt-12">
             <textarea
               className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 min-h-[120px] resize-none transition duration-200"
               value={newComment}
               onChange={handleCommentChange}
               placeholder="Escribe aqui tu comentario y comparte tu opinión con otros usuarios! Pero por favor, evita hacer spoilers..."
             ></textarea>
+            {/* Componente de puntuación */}
+            <div className="mt-4">
+              <Rating
+                onRatingChange={setNewRating}
+                rating={newRating}
+                readonly={false}
+              />
+            </div>
             <button
               onClick={handleSubmit}
-              className="mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition duration-200 font-medium "
+              className="px-6 py-2 mt-4 font-medium text-white transition duration-200 bg-indigo-600 rounded-lg hover:bg-indigo-700 "
             >
               Publicar
             </button>
@@ -253,7 +290,7 @@ function Tagline({ movie }) {
       </q>
     );
   } else {
-    return <span className="block text-3xl font-semibold py-4">&nbsp;</span>;
+    return <span className="block py-4 text-3xl font-semibold">&nbsp;</span>;
   }
 }
 function CrewMember({ movie, job, label }) {
@@ -262,7 +299,7 @@ function CrewMember({ movie, job, label }) {
   if (people?.length !== 0)
     return (
       <div>
-        <dt className="font-bold text-sm">{label}</dt>
+        <dt className="text-sm font-bold">{label}</dt>
         {people?.map((p) => (
           <dd className="text-sm" key={`${job}/${p.id}`}>
             {p.name}
@@ -280,7 +317,7 @@ function Links({ movie }) {
 
   if (resources?.length === 0) {
     links = (
-      <span className="block p-8 text-center bg-gray-300 font-bold">
+      <span className="block p-8 font-bold text-center bg-gray-300">
         No se han encontrado enlaces!
       </span>
     );
@@ -296,7 +333,7 @@ function Links({ movie }) {
 
   return (
     <>
-      <h2 className="font-bold text-2xl">Ver ahora</h2>
+      <h2 className="text-2xl font-bold">Ver ahora</h2>
       <Separator />
       {links}
     </>
@@ -308,11 +345,11 @@ function CastMember({ person }) {
       <img
         src={person?.picture}
         alt={`${person.name} profile`}
-        className="w-full object-top object-cover rounded shadow"
+        className="object-cover object-top w-full rounded shadow"
         style={{ aspectRatio: "2/3" }}
       />
-      <span className="font-bold block"> {person?.name} </span>
-      <span className="text-sm block"> {person?.character} </span>
+      <span className="block font-bold"> {person?.name} </span>
+      <span className="block text-sm"> {person?.character} </span>
     </li>
   );
 }
@@ -331,7 +368,7 @@ function PlatformLink({ type = "", url = "", ...props }) {
           <img
             src={Disney}
             alt="Disney+ logo"
-            className="rounded-lg w-16 h-16"
+            className="w-16 h-16 rounded-lg"
           />
           <span className="font-bold">Reproducir en</span>
         </a>
@@ -349,7 +386,7 @@ function PlatformLink({ type = "", url = "", ...props }) {
           <img
             src={Play}
             alt="Google Play logo"
-            className="rounded-lg w-16 h-16"
+            className="w-16 h-16 rounded-lg"
           />
           <span className="font-bold">Reproducir en Google Play</span>
         </a>
@@ -364,7 +401,7 @@ function PlatformLink({ type = "", url = "", ...props }) {
                                     transform transition duration-200 
                                     hover:translate-x-8 hover:scale-105`}
         >
-          <img src={HBO} alt="HBO logo" className="rounded-lg w-16 h-16" />
+          <img src={HBO} alt="HBO logo" className="w-16 h-16 rounded-lg" />
           <span className="font-bold">Reproducir en HBO</span>
         </a>
       );
@@ -381,7 +418,7 @@ function PlatformLink({ type = "", url = "", ...props }) {
           <img
             src={ITunes}
             alt="iTunes logo"
-            className="rounded-lg w-16 h-16"
+            className="w-16 h-16 rounded-lg"
           />
           <span className="font-bold">Reproducir en iTunes</span>
         </a>
@@ -399,7 +436,7 @@ function PlatformLink({ type = "", url = "", ...props }) {
           <img
             src={Netflix}
             alt="Netflix logo"
-            className="rounded-lg w-16 h-16"
+            className="w-16 h-16 rounded-lg"
           />
           <span className="font-bold">Reproducir en Netflix</span>
         </a>
@@ -417,7 +454,7 @@ function PlatformLink({ type = "", url = "", ...props }) {
           <img
             src={Prime}
             alt="Prime Video logo"
-            className="rounded-lg w-16 h-16"
+            className="w-16 h-16 rounded-lg"
           />
           <span className="font-bold">Reproducir en Prime Video</span>
         </a>
@@ -435,7 +472,7 @@ function PlatformLink({ type = "", url = "", ...props }) {
           <img
             src={Youtube}
             alt="YouTube logo"
-            className="rounded-lg w-16 h-16"
+            className="w-16 h-16 rounded-lg"
           />
           <span className="font-bold">Reproducir en YouTube</span>
         </a>
@@ -450,7 +487,7 @@ function Trailer({ movie, ...props }) {
   if (trailer) return <ReactPlayer url={trailer.url} {...props} />;
   else
     return (
-      <span className="text-white text-xl font-semibold p-8 backdrop-filter backdrop-blur bg-red-500 bg-opacity-30">
+      <span className="p-8 text-xl font-semibold text-white bg-red-500 backdrop-filter backdrop-blur bg-opacity-30">
         No se han encontrado trailers!
       </span>
     );

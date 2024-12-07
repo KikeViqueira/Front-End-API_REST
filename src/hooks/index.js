@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 
 import API from "../api";
 
@@ -72,19 +72,26 @@ export function useUser(id = null) {
           setData(null);
         });
     } else {
+      console.error("Error: userId es null o no válido");
       setData(null);
     }
-  }, []);
+  }, [userId]);
 
   const create = (user) =>
     API.instance()
       .createUser(user)
       .then((user) => setData(user));
 
-  const update = (user) =>
-    API.instance()
-      .updateUser(id, user)
-      .then((user) => setData(user));
+  const update = async (patches) => {
+    try {
+      const updatedUser = await API.instance().updateUser(userId, patches); // Asegúrate de usar userId
+      setData(updatedUser);
+      return updatedUser;
+    } catch (error) {
+      console.error("Error updating user:", error);
+      throw error;
+    }
+  };
 
   return {
     user: data,

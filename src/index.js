@@ -17,6 +17,8 @@ import EditMovie from "./pages/edit-movie";
 import CreateMovie from "./pages/create-movie";
 import Profile from "./pages/profile";
 import Friends from "./pages/friends";
+//Añadimos la ruta de la página de editar información de usuario
+import EditProfile from "./pages/editProfile";
 import NotFound from "./pages/not-found";
 
 import "./styles.css";
@@ -79,6 +81,16 @@ ReactDOM.render(
               </SecuredRoute>
             }
           />
+          {/* Añadimos la ruta de la página de editar información de usuario */}
+          <Route
+            path="/editProfile"
+            element={
+              <SecuredRoute>
+                <EditProfile />
+              </SecuredRoute>
+            }
+          />
+
           <Route
             path="/404"
             element={

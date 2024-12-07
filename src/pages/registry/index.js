@@ -8,7 +8,7 @@ import { useUser } from "../../hooks";
 import { AtSign, Fingerprint, User, Calendar } from "lucide-react";
 
 export default function Login() {
-  const history = useNavigate();
+  const navigate = useNavigate();
   const { isAuthenticated } = useContext(AuthenticationContext);
   const { create } = useUser();
   const [errors, setErrors] = useState(false);
@@ -20,21 +20,23 @@ export default function Login() {
 
     try {
       const [day, month, year] = birthday
-        .split(/[^0-9]/)
+        .split(/[^0-9]/) // Separa la fecha en partes usando cualquier caracter que no sea un número
         .map((part) => Number.parseInt(part));
       const date = new Date(year, month - 1, day);
 
-      debugger;
+      ///debugger;
 
       if (
+        //Compara si la fecha es igual a la fecha ingresada
         date.getDate() !== day ||
         date.getMonth() !== month - 1 ||
         date.getFullYear() !== year
       ) {
         setErrors(true);
       } else {
+        //Invocamos a la función create del hook useUser para crear el nuevo usuario pasándole los datos del form
         await create({
-          email: data.get("email"),
+          email: data.get("user"),
           name: data.get("name"),
           password: data.get("password"),
           birthday: {
@@ -44,7 +46,8 @@ export default function Login() {
           },
         });
 
-        history.push("/");
+        //Redirigimos al usuario a la página principal después del registro exitoso
+        navigate("/");
       }
     } catch (err) {
       setErrors(true);
@@ -58,13 +61,13 @@ export default function Login() {
   if (isAuthenticated) return <Navigate to="/" />;
   else
     return (
-      <main className="w-screen h-screen grid place-items-center content-center bg-pattern-1">
+      <main className="grid content-center w-screen h-screen place-items-center bg-pattern-1">
         <form
-          className="bg-white rounded shadow p-8 flex flex-col text-teal-900"
+          className="flex flex-col p-8 text-teal-900 bg-white rounded shadow"
           onSubmit={submit}
           autoComplete="off"
         >
-          <Logo className="text-6xl mb-8" logoSize="w-12 h-12" />
+          <Logo className="mb-8 text-6xl" logoSize="w-12 h-12" />
           <Input
             type="email"
             name="user"
@@ -94,6 +97,7 @@ export default function Login() {
             onClick={reset}
             before={Calendar}
             variant="primary"
+            placeholder="DD/MM/YYYY"
             pattern="[0-3][0-9]/[0-1][0-9]/[1-2][0-9]{3}"
           />
           <Input

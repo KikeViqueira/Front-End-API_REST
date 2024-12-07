@@ -1,5 +1,3 @@
-import DATA from "./data";
-
 let __instance = null;
 
 export default class API {
@@ -141,6 +139,7 @@ export default class API {
     }
   }
 
+  //Obtener los comentarios de una película o de un usuario
   async findComments({
     filter: { movie = "", user = "" } = { movie: "", user: "" },
     sort,
@@ -150,22 +149,33 @@ export default class API {
     try {
       const token = localStorage.getItem("token");
 
+      //Creamos los parámetros comunes de paginación
       const params = new URLSearchParams({
         page: page.toString(),
         size: size.toString(),
       });
 
-      console.log("MOVIE: ", movie);
-      const response = await fetch(
-        `http://localhost:8080/comments/movie/${movie}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: token,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      let url;
+
+      //Determinamos el endpoint a llamar según el tipo de filtro proporcionado
+      if (movie) {
+        //Endpoint para obtener los comentarios de una película
+        url = `http://localhost:8080/comments/movie/${movie}?${params}`;
+      } else if (user) {
+        //Endpoint para obtener los comentarios de un usuario
+        url = `http://localhost:8080/comments/user/${user}?${params}`;
+      } else {
+        throw new Error("No se especificó un filtro válido (movie o user).");
+      }
+
+      console.log("FILTRO SELECCIONADO (MOVIE) (USER):", movie, user);
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: token,
+          "Content-Type": "application/json",
+        },
+      });
 
       if (!response.ok) {
         throw new Error("Error al obtener los comentarios");
@@ -204,14 +214,55 @@ export default class API {
     }
   }
 
+  // Método para llamar al endpoint correspondiente de la api para la creación de un usuario
   async createUser(user) {
-    console.log(user);
+    try {
+      const response = await fetch("http://localhost:8080/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json", // Indica que el contenido del body es JSON
+        },
+        //Por defecto tenemos que hacer que todos los usuarios que se registren otorguen el rol de USER
+        body: JSON.stringify({ ...user, roles: ["ROLE_USER"] }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Error al crear el usuario");
+      }
+
+      return await response.json(); // Devuelve confirmación de que el usuario fue creado
+    } catch (error) {
+      console.error("Error al crear el usuario: ", error);
+      throw error;
+    }
   }
 
-  async updateUser(id, user) {
-    console.log(user);
+  // Método para llamar al endpoint correspondiente de la api para la actualización de un usuario
+  async updateUser(id, patches) {
+    try {
+      console.log("Patches en la api:", JSON.stringify(patches));
+      const token = localStorage.getItem("token");
+      const response = await fetch(`http://localhost:8080/users/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+        body: JSON.stringify(patches),
+      });
+
+      if (!response.ok) {
+        throw new Error("Error al actualizar el usuario");
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("Error al actualizar el usuario: ", error);
+      throw error;
+    }
   }
 
+  // Método para llamar al endpoint correspondiente de la api para la actualización de una película
   async updateMovie(id, patches) {
     console.log("Patches en la api:", JSON.stringify(patches));
     try {
