@@ -319,15 +319,21 @@ export default class API {
     }
   }
 
-  async removeFriend(userId) {
+  async removeFriend(email) {
+    const userId = localStorage.getItem("user");
+    console.log("Amigo a eliminar desde la api: ", userId);
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:8080/friends/${userId}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: token,
-        },
-      });
+      const response = await fetch(
+        `http://localhost:8080/users/${userId}/friends/${email}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token,
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Error al eliminar amigo");
