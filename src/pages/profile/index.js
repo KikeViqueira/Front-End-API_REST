@@ -41,15 +41,16 @@ export default function Profile() {
 function Header({ user }) {
   return (
     <header className="relative flex items-end pb-8 mt-6 min-h-[550px]">
-      {/* Fondo difuminado como en la página de movies */}
+      {/* Fondo difuminado */}
       <img
-        src="https://via.placeholder.com/1920x1080" // Imagen estática de fondo
+        src={user?.picture || "https://via.placeholder.com/1920x1080"}
         alt="Background"
-        className="absolute top-0 left-0 right-0 object-cover w-full h-[450px] transform scale-105 filter blur"
+        className="absolute top-0 left-0 right-0 object-cover w-full h-[450px] transform scale-105 blur-sm"
       />
+      {/* Overlay para oscurecer ligeramente el fondo */}
+      <div className="absolute top-0 left-0 right-0 h-[450px] bg-black opacity-30" />
 
       <img
-        // Poniendo ?. antes de la propiedad, se evita que se lance un error si la propiedad es null o undefined
         src={user?.picture || "https://via.placeholder.com/1920x1080"}
         alt={user?.name}
         className="relative object-cover w-64 h-64 border-4 border-white rounded-full shadow-xl"
@@ -57,11 +58,7 @@ function Header({ user }) {
 
       {/*Información del usuario*/}
       <hgroup className="flex-1">
-        <h1
-          className={`bg-black bg-opacity-50 backdrop-filter backdrop-blur 
-                                          text-right text-white text-6xl font-bold
-                                          p-8`}
-        >
+        <h1 className="text-right text-white text-6xl font-bold p-8 bg-black bg-opacity-50 backdrop-blur-sm">
           {user?.name}
         </h1>
         <div className="flex flex-row justify-between">
@@ -74,9 +71,9 @@ function Header({ user }) {
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
               class="lucide lucide-calendar"
             >
               <path d="M8 2v4" />
@@ -98,9 +95,9 @@ function Header({ user }) {
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
               class="lucide lucide-map-pin"
             >
               <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />

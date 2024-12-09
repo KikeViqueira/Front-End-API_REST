@@ -56,25 +56,25 @@ export function useUser(id = null) {
 
   console.log("Ejecutando useUser", userId);
 
-  useEffect(() => {
+  const fetchUser = async () => {
     if (userId) {
-      API.instance()
-        .findUser(userId)
-        .then((user) => {
-          if (!user) {
-            console.log("No se encontro al user :(");
-          } else {
-            setData(user);
-            console.log("user", user);
-          }
-        })
-        .catch(() => {
-          setData(null);
-        });
-    } else {
-      console.error("Error: userId es null o no válido");
-      setData(null);
+      try {
+        const user = await API.instance().findUser(userId);
+        if (user) {
+          setData(user);
+          console.log("User refreshed", user);
+        }
+        return user;
+      } catch (error) {
+        console.error("Error refreshing user:", error);
+        setData(null);
+        return null;
+      }
     }
+  };
+
+  useEffect(() => {
+    fetchUser();
   }, [userId]);
 
   const create = (user) =>
@@ -97,6 +97,7 @@ export function useUser(id = null) {
     user: data,
     create,
     update,
+    fetchUser,
   };
 }
 
@@ -157,10 +158,10 @@ export function useComments(query = {}) {
 export function useFriends() {
   const [error, setError] = useState(null);
 
-  const addFriend = async (userId) => {
+  const addFriend = async (email, name) => {
     try {
       const api = new API();
-      await api.addFriend(userId);
+      await api.addFriend(email, name);
     } catch (err) {
       setError(err.message);
     }

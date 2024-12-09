@@ -1,7 +1,7 @@
 import { Shell } from "../../components";
 import { useUser } from "../../hooks";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function EditProfile() {
   const { user, update } = useUser(); // Obtenemos los datos del usuario
@@ -89,6 +89,13 @@ function Header({ user, onSave }) {
   const [country, setCountry] = useState(user?.country || "");
   const [picture, setPicture] = useState(user?.picture || null);
 
+  useEffect(() => {
+    if (picture instanceof File) {
+      const objectUrl = URL.createObjectURL(picture);
+      return () => URL.revokeObjectURL(objectUrl);
+    }
+  }, [picture]);
+
   //Función para manejar la carga de una nueva imagen
   const handlePicture = (event) => {
     const file = event.target.files[0];
@@ -101,21 +108,33 @@ function Header({ user, onSave }) {
     <header className="relative flex items-end pb-8 mt-6 min-h-[650px]">
       {/* Fondo difuminado como en la página de movies */}
       <img
-        src="https://via.placeholder.com/1920x1080" // Imagen estática de fondo
+        src={picture instanceof File ? URL.createObjectURL(picture) : picture}
         alt="Background"
-        className="absolute top-0 left-0 right-0 object-cover w-full h-[450px] transform scale-105 filter blur"
+        className="absolute top-0 left-0 right-0 object-cover w-full h-[450px] transform scale-105 blur-sm"
       />
+      {/* Overlay para oscurecer ligeramente el fondo */}
+      <div className="absolute top-0 left-0 right-0 h-[450px] bg-black opacity-30" />
 
       {/*Imagen que podemos cambiar de perfil*/}
       <div>
-        <label htmlFor="profilePicture" className="cursor-pointer">
-          <img
-            src={
-              picture instanceof File ? URL.createObjectURL(picture) : picture
-            }
-            alt="Profile"
-            className="relative object-cover w-64 h-64 border-4 border-white rounded-full shadow-xl"
-          />
+        <label
+          htmlFor="profilePicture"
+          className="cursor-pointer group relative"
+        >
+          <div className="relative">
+            <img
+              src={
+                picture instanceof File ? URL.createObjectURL(picture) : picture
+              }
+              alt="Profile"
+              className="relative object-cover w-64 h-64 border-4 border-white rounded-full shadow-xl transition-opacity group-hover:opacity-75"
+            />
+            <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all">
+              <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity">
+                Cambiar foto
+              </span>
+            </div>
+          </div>
         </label>
         <input
           type="file"

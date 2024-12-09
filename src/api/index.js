@@ -132,6 +132,7 @@ export default class API {
       }
 
       const user = await response.json();
+      console.log("Usuario recibido desde la API:", user);
       return user;
     } catch (error) {
       console.error("Error al buscar usuario:", error);
@@ -287,15 +288,25 @@ export default class API {
     }
   }
 
-  async addFriend(userId) {
+  async addFriend(email, name) {
+    const userId = localStorage.getItem("user");
+    console.log("En la api el userId: ", userId, name);
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:8080/friends/${userId}`, {
-        method: "POST",
-        headers: {
-          Authorization: token,
-        },
-      });
+      const response = await fetch(
+        `http://localhost:8080/users/${userId}/friends`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token,
+          },
+          body: JSON.stringify({
+            email: email,
+            name: name,
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Error al añadir amigo");
