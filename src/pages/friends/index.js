@@ -100,8 +100,6 @@ export default function Friends() {
           alt="Background"
           className="absolute top-0 left-0 right-0 object-cover w-full h-[450px] transform scale-105 blur-sm"
         />
-        {/* Overlay para oscurecer ligeramente el fondo */}
-        <div className="absolute top-0 left-0 right-0 h-[450px] bg-black opacity-30" />
 
         <div className="flex relative z-10 items-center space-x-6">
           <img

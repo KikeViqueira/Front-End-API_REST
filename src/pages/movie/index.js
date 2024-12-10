@@ -41,12 +41,12 @@ export default function Movie() {
         style={{ height: "36rem" }}
         src={backdrop(movie)}
         alt={`${movie.title} backdrop`}
-        className="absolute left-0 right-0 object-cover w-full transform scale-105 top-2 filter blur"
+        className="object-cover absolute right-0 left-0 top-2 w-full filter blur transform scale-105"
       />
 
       <Link
         variant="primary"
-        className="absolute flex items-center gap-4 py-2 pl-2 pr-4 text-white rounded-full top-4 left-8"
+        className="flex absolute top-4 left-8 gap-4 items-center py-2 pr-4 pl-2 text-white rounded-full"
         to="/"
       >
         <Back className="w-8 h-8" />
@@ -55,13 +55,13 @@ export default function Movie() {
 
       <Link
         variant="primary"
-        className="absolute flex items-center gap-4 px-2 py-2 text-white rounded-full top-4 right-8"
+        className="flex absolute top-4 right-8 gap-4 items-center px-2 py-2 text-white rounded-full"
         to={`/movies/${id}/edit`}
       >
         <Edit className="w-8 h-8" />
       </Link>
 
-      <div className="w-full p-8 mx-auto max-w-screen-2xl">
+      <div className="p-8 mx-auto w-full max-w-screen-2xl">
         <Header movie={movie} />
         <Info movie={movie} />
         <View movie={movie} />
@@ -74,7 +74,7 @@ export default function Movie() {
 
 function Header({ movie }) {
   return (
-    <header className="relative flex items-end pb-8 mt-64 mb-8">
+    <header className="flex relative items-end pb-8 mt-64 mb-8">
       <img
         style={{ aspectRatio: "2/3" }}
         src={poster(movie)}
@@ -83,9 +83,7 @@ function Header({ movie }) {
       />
       <hgroup className="flex-1">
         <h1
-          className={`bg-black bg-opacity-50 backdrop-filter backdrop-blur 
-                                          text-right text-white text-6xl font-bold
-                                          p-8`}
+          className={`p-8 text-6xl font-bold text-right text-white bg-black bg-opacity-50 backdrop-filter backdrop-blur`}
         >
           {movie.title}
         </h1>
@@ -98,7 +96,7 @@ function Info({ movie }) {
   return (
     <div className="grid grid-cols-5 gap-4">
       <div className="col-span-4">
-        <h2 className="p-4 text-2xl font-bold text-white shadow bg-gradient-to-br from-pink-500 via-red-500 to-yellow-500">
+        <h2 className="p-4 text-2xl font-bold text-white bg-gradient-to-br from-pink-500 via-red-500 to-yellow-500 shadow">
           Argumento
         </h2>
         <p className="p-4 pt-8">{movie.overview}</p>
@@ -120,27 +118,30 @@ function Info({ movie }) {
 }
 function View({ movie }) {
   return (
-    <div className="flex gap-4 mt-8">
-      <div className="z-10 w-80">
+    <div className="flex gap-8 mt-8 h-auto">
+      <div className="z-10 w-80 h-fit">
         <Links movie={movie} />
       </div>
-      <div
-        style={{
-          aspectRatio: "16/9",
-        }}
-        className="z-20 flex items-center justify-center flex-1 mt-8 ml-8 bg-pattern-2"
-      >
-        <Trailer movie={movie} />
+      <div className="flex-1">
+        <div
+          style={{
+            aspectRatio: "16/9",
+          }}
+          className="flex z-20 justify-center items-center bg-pattern-2"
+        >
+          <Trailer movie={movie} />
+        </div>
       </div>
     </div>
   );
 }
+
 function Cast({ movie }) {
   return (
     <>
       <h2 className="mt-16 text-2xl font-bold">Reparto principal</h2>
       <Separator />
-      <ul className="grid w-full grid-cols-10 gap-2 overflow-hidden">
+      <ul className="grid overflow-hidden grid-cols-10 gap-2 w-full">
         {movie?.cast?.slice(0, 10).map((person) => (
           <CastMember key={person.name} person={person} />
         ))}
@@ -184,7 +185,7 @@ function Comments({ movie }) {
   };
 
   return (
-    <div className="max-w-full mx-auto mt-16">
+    <div className="mx-auto mt-16 max-w-full">
       <h2 className="mt-16 text-2xl font-bold">Comentarios</h2>
       <Separator />
       <div className="space-y-8">
@@ -252,27 +253,36 @@ function Comments({ movie }) {
               </Slider>
             </div>
           )}
-          <form className="flex flex-col items-end mt-12">
+          {/* Formulario para crear un comentario */}
+          <form className="flex flex-row justify-between items-end mt-12">
+            {/* Componente de puntuación y publicar */}
+            <div className="flex flex-col gap-5 justify-start">
+              <h2>
+                <strong>Y a ti, que te ha parecido?</strong>
+              </h2>
+
+              <div className="flex flex-col gap-20 justify-start">
+                <Rating
+                  onRatingChange={setNewRating}
+                  rating={newRating}
+                  readonly={false}
+                />
+
+                <button
+                  onClick={handleSubmit}
+                  className="px-6 py-2 mt-4 font-medium text-white bg-gradient-to-br from-pink-500 via-red-500 to-yellow-500 rounded-lg shadow-lg transition duration-200 hover:from-green-500 hover:to-blue-500 hover:via-teal-500 focus:from-green-500 focus:to-blue-500 focus:via-teal-500 hover:shadow-xl"
+                >
+                  Publicar
+                </button>
+              </div>
+            </div>
+
             <textarea
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 min-h-[120px] resize-none transition duration-200"
+              className="w-[70%] min-h-[200px] px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none transition duration-200"
               value={newComment}
               onChange={handleCommentChange}
               placeholder="Escribe aqui tu comentario y comparte tu opinión con otros usuarios! Pero por favor, evita hacer spoilers..."
             ></textarea>
-            {/* Componente de puntuación */}
-            <div className="mt-4">
-              <Rating
-                onRatingChange={setNewRating}
-                rating={newRating}
-                readonly={false}
-              />
-            </div>
-            <button
-              onClick={handleSubmit}
-              className="px-6 py-2 mt-4 font-medium text-white transition duration-200 bg-indigo-600 rounded-lg hover:bg-indigo-700 "
-            >
-              Publicar
-            </button>
           </form>
         </div>
       </div>
@@ -284,7 +294,7 @@ function Tagline({ movie }) {
   if (movie.tagline) {
     return (
       <q
-        className={`block text-3xl font-semibold text-black italic w-full px-8 py-4 text-right`}
+        className={`block px-8 py-4 w-full text-3xl italic font-semibold text-right text-black`}
       >
         {movie.tagline}
       </q>
@@ -361,9 +371,7 @@ function PlatformLink({ type = "", url = "", ...props }) {
           target="_blank"
           rel="noreferrer"
           href={url}
-          className={`flex items-center space-x-2 overflow-hidden h-16 w-full bg-white
-                                    transform transition duration-200 
-                                    hover:translate-x-8 hover:scale-105`}
+          className={`flex overflow-hidden items-center space-x-2 w-full h-16 bg-white transition duration-200 transform hover:translate-x-8 hover:scale-105`}
         >
           <img
             src={Disney}
@@ -379,9 +387,7 @@ function PlatformLink({ type = "", url = "", ...props }) {
           target="_blank"
           rel="noreferrer"
           href={url}
-          className={`flex items-center space-x-2 overflow-hidden h-16 w-full bg-white
-                                    transform transition duration-200 
-                                    hover:translate-x-8 hover:scale-105`}
+          className={`flex overflow-hidden items-center space-x-2 w-full h-16 bg-white transition duration-200 transform hover:translate-x-8 hover:scale-105`}
         >
           <img
             src={Play}
@@ -397,9 +403,7 @@ function PlatformLink({ type = "", url = "", ...props }) {
           target="_blank"
           rel="noreferrer"
           href={url}
-          className={`flex items-center space-x-2 overflow-hidden h-16 w-full bg-white
-                                    transform transition duration-200 
-                                    hover:translate-x-8 hover:scale-105`}
+          className={`flex overflow-hidden items-center space-x-2 w-full h-16 bg-white transition duration-200 transform hover:translate-x-8 hover:scale-105`}
         >
           <img src={HBO} alt="HBO logo" className="w-16 h-16 rounded-lg" />
           <span className="font-bold">Reproducir en HBO</span>
@@ -411,9 +415,7 @@ function PlatformLink({ type = "", url = "", ...props }) {
           target="_blank"
           rel="noreferrer"
           href={url}
-          className={`flex items-center space-x-2 overflow-hidden h-16 w-full bg-white
-                                    transform transition duration-200 
-                                    hover:translate-x-8 hover:scale-105`}
+          className={`flex overflow-hidden items-center space-x-2 w-full h-16 bg-white transition duration-200 transform hover:translate-x-8 hover:scale-105`}
         >
           <img
             src={ITunes}
@@ -429,9 +431,7 @@ function PlatformLink({ type = "", url = "", ...props }) {
           target="_blank"
           rel="noreferrer"
           href={url}
-          className={`flex items-center space-x-2 overflow-hidden h-16 w-full bg-white
-                                    transform transition duration-200 
-                                    hover:translate-x-8 hover:scale-105`}
+          className={`flex overflow-hidden items-center space-x-2 w-full h-16 bg-white transition duration-200 transform hover:translate-x-8 hover:scale-105`}
         >
           <img
             src={Netflix}
@@ -447,9 +447,7 @@ function PlatformLink({ type = "", url = "", ...props }) {
           target="_blank"
           rel="noreferrer"
           href={url}
-          className={`flex items-center space-x-2 overflow-hidden h-16 w-full bg-white
-                                    transform transition duration-200 
-                                    hover:translate-x-8 hover:scale-105`}
+          className={`flex overflow-hidden items-center space-x-2 w-full h-16 bg-white transition duration-200 transform hover:translate-x-8 hover:scale-105`}
         >
           <img
             src={Prime}
@@ -465,9 +463,7 @@ function PlatformLink({ type = "", url = "", ...props }) {
           target="_blank"
           rel="noreferrer"
           href={url}
-          className={`flex items-center space-x-2 overflow-hidden h-16 w-full bg-white
-                                    transform transition duration-200 
-                                    hover:translate-x-8 hover:scale-105`}
+          className={`flex overflow-hidden items-center space-x-2 w-full h-16 bg-white transition duration-200 transform hover:translate-x-8 hover:scale-105`}
         >
           <img
             src={Youtube}
@@ -481,14 +477,17 @@ function PlatformLink({ type = "", url = "", ...props }) {
       return null;
   }
 }
+
 function Trailer({ movie, ...props }) {
   const trailer = movie?.resources?.find((r) => r.type === "TRAILER");
 
   if (trailer) return <ReactPlayer url={trailer.url} {...props} />;
   else
     return (
-      <span className="p-8 text-xl font-semibold text-white bg-red-500 backdrop-filter backdrop-blur bg-opacity-30">
-        No se han encontrado trailers!
-      </span>
+      <div className="flex justify-center items-center w-full h-full">
+        <span className="p-8 text-xl font-semibold text-white bg-black backdrop-filter backdrop-blur">
+          No se han encontrado trailers!
+        </span>
+      </div>
     );
 }

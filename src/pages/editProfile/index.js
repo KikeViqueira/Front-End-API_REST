@@ -65,7 +65,7 @@ export default function EditProfile() {
   if (!user) {
     return (
       <Shell>
-        <div className="w-full p-8 mx-auto max-w-screen-2xl">
+        <div className="p-8 mx-auto w-full max-w-screen-2xl">
           <p className="text-lg text-center text-gray-500">
             Cargando perfil...
           </p>
@@ -76,7 +76,7 @@ export default function EditProfile() {
 
   return (
     <Shell>
-      <div className="w-full p-8 mx-auto max-w-screen-2xl">
+      <div className="p-8 mx-auto w-full max-w-screen-2xl">
         <Header user={user} onSave={handleSave} />
       </div>
     </Shell>
@@ -112,14 +112,12 @@ function Header({ user, onSave }) {
         alt="Background"
         className="absolute top-0 left-0 right-0 object-cover w-full h-[450px] transform scale-105 blur-sm"
       />
-      {/* Overlay para oscurecer ligeramente el fondo */}
-      <div className="absolute top-0 left-0 right-0 h-[450px] bg-black opacity-30" />
 
       {/*Imagen que podemos cambiar de perfil*/}
       <div>
         <label
           htmlFor="profilePicture"
-          className="cursor-pointer group relative"
+          className="relative cursor-pointer group"
         >
           <div className="relative">
             <img
@@ -127,10 +125,10 @@ function Header({ user, onSave }) {
                 picture instanceof File ? URL.createObjectURL(picture) : picture
               }
               alt="Profile"
-              className="relative object-cover w-64 h-64 border-4 border-white rounded-full shadow-xl transition-opacity group-hover:opacity-75"
+              className="object-cover relative w-64 h-64 rounded-full border-4 border-white shadow-xl transition-opacity group-hover:opacity-75"
             />
-            <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all">
-              <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="flex absolute inset-0 justify-center items-center bg-black bg-opacity-0 rounded-full transition-all group-hover:bg-opacity-30">
+              <span className="text-white opacity-0 transition-opacity group-hover:opacity-100">
                 Cambiar foto
               </span>
             </div>
@@ -146,19 +144,17 @@ function Header({ user, onSave }) {
       </div>
 
       {/*Información del usuario*/}
-      <hgroup className="flex flex-col w-full gap-5">
+      <hgroup className="flex flex-col gap-5 w-full">
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className={`bg-black bg-opacity-50 backdrop-filter backdrop-blur 
-            text-right text-white text-6xl font-bold
-            p-8`}
+          className={`p-8 text-6xl font-bold text-right text-white bg-black bg-opacity-50 backdrop-filter backdrop-blur`}
         />
 
         <div className="flex flex-row justify-between">
           {/* Fecha de nacimiento con ícono de calendario */}
-          <div className="flex items-center gap-2 text-lg text-gray-500">
+          <div className="flex gap-2 items-center text-lg text-gray-500">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -182,7 +178,7 @@ function Header({ user, onSave }) {
           </div>
 
           {/* País con ícono de ubicación */}
-          <div className="flex items-center gap-2 text-lg text-gray-500">
+          <div className="flex gap-2 items-center text-lg text-gray-500">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -215,7 +211,7 @@ function Header({ user, onSave }) {
         {/* Botón para guardar cambios */}
         <button
           onClick={() => onSave({ name, country, picture })}
-          className="px-6 py-3 mt-4 font-bold text-white transition duration-200 bg-indigo-600 rounded-lg shadow-lg hover:bg-indigo-700"
+          className="px-6 py-3 mt-4 font-bold text-white bg-indigo-600 rounded-lg shadow-lg transition duration-200 hover:bg-indigo-700"
         >
           Guardar cambios
         </button>

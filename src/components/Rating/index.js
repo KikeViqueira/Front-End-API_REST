@@ -27,7 +27,7 @@ function Rating({
         <button
           key={value}
           onClick={(e) => handleRating(e, value)}
-          className={`w-8 h-8 rounded-full border ${
+          className={`w-7 h-7 rounded-full border ${
             //Si el valor del botón es menor o igual al rating, le asignamos el color amarillo, de lo contrario, le asignamos el color gris
 
             value <= rating ? "bg-yellow-400" : "bg-gray-300"

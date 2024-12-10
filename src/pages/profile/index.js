@@ -11,7 +11,7 @@ export default function Profile() {
   if (!user) {
     return (
       <Shell>
-        <div className="w-full p-8 mx-auto max-w-screen-2xl">
+        <div className="p-8 mx-auto w-full max-w-screen-2xl">
           <p className="text-lg text-center text-gray-500">
             Cargando perfil...
           </p>
@@ -22,12 +22,12 @@ export default function Profile() {
 
   return (
     <Shell>
-      <div className="w-full p-8 mx-auto max-w-screen-2xl">
+      <div className="p-8 pt-0 mx-auto">
         <Header user={user} />
-        <div className="flex justify-center mt-6">
+        <div className="flex justify-center mt-4">
           <Link
             to="/editProfile"
-            className="px-6 py-3 font-bold text-white transition duration-200 bg-indigo-600 rounded-lg shadow-lg hover:bg-indigo-700 hover:shadow-xl"
+            className="px-6 py-3 font-bold text-white bg-indigo-600 rounded-lg shadow-lg transition duration-200 hover:bg-indigo-700 hover:shadow-xl"
           >
             Editar perfil
           </Link>
@@ -40,77 +40,77 @@ export default function Profile() {
 
 function Header({ user }) {
   return (
-    <header className="relative flex items-end pb-8 mt-6 min-h-[550px]">
+    <header className="w-full relative  flex items-end justify-center min-h-[650px]">
       {/* Fondo difuminado */}
       <img
         src={user?.picture || "https://via.placeholder.com/1920x1080"}
         alt="Background"
-        className="absolute top-0 left-0 right-0 object-cover w-full h-[450px] transform scale-105 blur-sm"
-      />
-      {/* Overlay para oscurecer ligeramente el fondo */}
-      <div className="absolute top-0 left-0 right-0 h-[450px] bg-black opacity-30" />
-
-      <img
-        src={user?.picture || "https://via.placeholder.com/1920x1080"}
-        alt={user?.name}
-        className="relative object-cover w-64 h-64 border-4 border-white rounded-full shadow-xl"
+        className="absolute top-0 left-0 right-0 object-cover w-full h-[500px] transform scale-105 blur-sm"
       />
 
-      {/*Información del usuario*/}
-      <hgroup className="flex-1">
-        <h1 className="text-right text-white text-6xl font-bold p-8 bg-black bg-opacity-50 backdrop-blur-sm">
-          {user?.name}
-        </h1>
-        <div className="flex flex-row justify-between">
-          {/* Fecha de nacimiento con ícono de calendario */}
-          <div className="flex items-center gap-2 text-lg text-gray-500">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              class="lucide lucide-calendar"
-            >
-              <path d="M8 2v4" />
-              <path d="M16 2v4" />
-              <rect width="18" height="18" x="3" y="4" rx="2" />
-              <path d="M3 10h18" />
-            </svg>
-            {user?.birthday
-              ? `${user.birthday.day}/${user.birthday.month}/${user.birthday.year}`
-              : "No disponible"}
-          </div>
+      <div className="flex flex-row justify-center items-center w-[80%]">
+        <img
+          src={user?.picture || "https://via.placeholder.com/1920x1080"}
+          alt={user?.name}
+          className="object-cover relative w-64 h-64 rounded-full border-4 border-white shadow-xl"
+        />
 
-          {/* País con ícono de ubicación */}
-          <div className="flex items-center gap-2 text-lg text-gray-500">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              class="lucide lucide-map-pin"
-            >
-              <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
-              <circle cx="12" cy="10" r="3" />
-            </svg>
-            {user?.country || "País no disponible"}
-          </div>
+        {/*Información del usuario*/}
+        <hgroup className="flex flex-col flex-1">
+          <h1 className="p-8 text-6xl font-bold text-right text-white bg-black bg-opacity-50 backdrop-blur-sm">
+            {user?.name}
+          </h1>
+          <div className="flex flex-row justify-between w-[90%] self-center">
+            {/* Fecha de nacimiento con ícono de calendario */}
+            <div className="flex gap-2 items-center text-lg text-gray-500">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                class="lucide lucide-calendar"
+              >
+                <path d="M8 2v4" />
+                <path d="M16 2v4" />
+                <rect width="18" height="18" x="3" y="4" rx="2" />
+                <path d="M3 10h18" />
+              </svg>
+              {user?.birthday
+                ? `${user.birthday.day}/${user.birthday.month}/${user.birthday.year}`
+                : "No disponible"}
+            </div>
 
-          <p className="mt-2 text-lg text-gray-500">
-            {user?.email || "Correo no disponible"}
-          </p>
-        </div>
-      </hgroup>
+            {/* País con ícono de ubicación */}
+            <div className="flex gap-2 items-center text-lg text-gray-500">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                class="lucide lucide-map-pin"
+              >
+                <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+              {user?.country || "País no disponible"}
+            </div>
+
+            <p className="mt-2 text-lg text-gray-500">
+              {user?.email || "Correo no disponible"}
+            </p>
+          </div>
+        </hgroup>
+      </div>
     </header>
   );
 }
@@ -120,7 +120,7 @@ function Comments({ user }) {
   const { comments = [] } = useComments({ filter: { user: user.email } });
 
   return (
-    <div className="max-w-full mx-auto mt-16">
+    <div className="mx-auto mt-16 max-w-full">
       <h2 className="mt-16 text-2xl font-bold">Últimos Comentarios</h2>
       <Separator />
       <div className="space-y-8">
@@ -134,7 +134,7 @@ function Comments({ user }) {
           comments._embedded.assessmentList.map((comment, index) => (
             <div
               key={index}
-              className="p-6 mx-2 transition-shadow duration-300 bg-white rounded-lg shadow-md hover:shadow-lg"
+              className="p-6 mx-2 bg-white rounded-lg shadow-md transition-shadow duration-300 hover:shadow-lg"
             >
               <div className="flex flex-row justify-between">
                 <p className="mb-2">
