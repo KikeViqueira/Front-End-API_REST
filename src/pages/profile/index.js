@@ -40,20 +40,36 @@ export default function Profile() {
 
 function Header({ user }) {
   return (
-    <header className="w-full relative  flex items-end justify-center min-h-[650px]">
+    <header className="w-full relative flex items-end justify-center min-h-[650px]">
       {/* Fondo difuminado */}
-      <img
-        src={user?.picture || "https://via.placeholder.com/1920x1080"}
-        alt="Background"
-        className="absolute top-0 left-0 right-0 object-cover w-full h-[500px] transform scale-105 blur-sm"
-      />
+      <div
+        className={`absolute top-0 left-0 right-0 h-[500px] transform scale-105 blur-sm ${
+          !user?.picture ? "bg-gray-200" : ""
+        }`}
+      >
+        {user?.picture && (
+          <img
+            src={user.picture}
+            alt="Background"
+            className="object-cover w-full h-full"
+          />
+        )}
+      </div>
 
-      <div className="flex flex-row justify-center items-center w-[80%]">
-        <img
-          src={user?.picture || "https://via.placeholder.com/1920x1080"}
-          alt={user?.name}
-          className="object-cover relative w-64 h-64 rounded-full border-4 border-white shadow-xl "
-        />
+      <div className="flex flex-row justify-center items-center w-[80%] z-10">
+        <div
+          className={`w-64 h-64 rounded-full border-4 border-white shadow-xl ${
+            !user?.picture ? "bg-gray-300" : ""
+          }`}
+        >
+          {user?.picture && (
+            <img
+              src={user.picture}
+              alt={user?.name}
+              className="object-cover w-full h-full rounded-full"
+            />
+          )}
+        </div>
 
         {/*Información del usuario*/}
         <hgroup className="flex flex-col flex-1">

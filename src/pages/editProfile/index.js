@@ -2,6 +2,7 @@ import { Shell } from "../../components";
 import { useUser } from "../../hooks";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 export default function EditProfile() {
   const { user, update } = useUser(); // Obtenemos los datos del usuario
@@ -39,14 +40,15 @@ export default function EditProfile() {
         });
       }
 
-      // Enviar los parches al backend
+      // Enviar los parches al backend solo si hay cambios
       if (patches.length > 0) {
         console.log("Parches enviados:", patches);
         await update(patches); // Llamada al hook `update`
-        navigate("/profile"); // Redirige al perfil
       } else {
         console.log("No hay cambios que guardar.");
       }
+      // Siempre navegamos al perfil, haya o no cambios
+      navigate("/profile");
     } catch (error) {
       console.error("Error al guardar los cambios:", error);
     }
@@ -76,7 +78,7 @@ export default function EditProfile() {
 
   return (
     <Shell>
-      <div className="p-8 mx-auto w-full max-w-screen-2xl">
+      <div className="p-8 pt-0 mx-auto">
         <Header user={user} onSave={handleSave} />
       </div>
     </Shell>
@@ -105,117 +107,137 @@ function Header({ user, onSave }) {
   };
 
   return (
-    <header className="relative flex items-end pb-8 mt-6 min-h-[650px]">
-      {/* Fondo difuminado como en la página de movies */}
-      <img
-        src={picture instanceof File ? URL.createObjectURL(picture) : picture}
-        alt="Background"
-        className="absolute top-0 left-0 right-0 object-cover w-full h-[450px] transform scale-105 blur-sm"
-      />
-
-      {/*Imagen que podemos cambiar de perfil*/}
-      <div>
-        <label
-          htmlFor="profilePicture"
-          className="relative cursor-pointer group"
-        >
-          <div className="relative">
-            <img
-              src={
-                picture instanceof File ? URL.createObjectURL(picture) : picture
-              }
-              alt="Profile"
-              className="object-cover relative w-64 h-64 rounded-full border-4 border-white shadow-xl transition-opacity group-hover:opacity-75"
-            />
-            <div className="flex absolute inset-0 justify-center items-center bg-black bg-opacity-0 rounded-full transition-all group-hover:bg-opacity-30">
-              <span className="text-white opacity-0 transition-opacity group-hover:opacity-100">
-                Cambiar foto
-              </span>
-            </div>
-          </div>
-        </label>
-        <input
-          type="file"
-          id="profilePicture"
-          className="hidden"
-          accept="image/*"
-          onChange={handlePicture}
-        />
+    <header className="w-full relative flex items-end justify-center min-h-[650px]">
+      {/* Fondo difuminado */}
+      <div className={`absolute top-0 left-0 right-0 h-[500px] transform scale-105 blur-sm ${!picture ? 'bg-gray-200' : ''}`}>
+        {picture && (
+          <img
+            src={picture instanceof File ? URL.createObjectURL(picture) : picture}
+            alt="Background"
+            className="object-cover w-full h-full"
+          />
+        )}
       </div>
 
-      {/*Información del usuario*/}
-      <hgroup className="flex flex-col gap-5 w-full">
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className={`p-8 text-6xl font-bold text-right text-white bg-black bg-opacity-50 backdrop-filter backdrop-blur`}
-        />
-
-        <div className="flex flex-row justify-between">
-          {/* Fecha de nacimiento con ícono de calendario */}
-          <div className="flex gap-2 items-center text-lg text-gray-500">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="lucide lucide-calendar"
-            >
-              <path d="M8 2v4" />
-              <path d="M16 2v4" />
-              <rect width="18" height="18" x="3" y="4" rx="2" />
-              <path d="M3 10h18" />
-            </svg>
-            {user?.birthday
-              ? `${user.birthday.day}/${user.birthday.month}/${user.birthday.year}`
-              : "No disponible"}
-          </div>
-
-          {/* País con ícono de ubicación */}
-          <div className="flex gap-2 items-center text-lg text-gray-500">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="lucide lucide-map-pin"
-            >
-              <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
-              <circle cx="12" cy="10" r="3" />
-            </svg>
-            {/* País editable */}
-            <input
-              type="text"
-              value={country}
-              onChange={(e) => setCountry(e.target.value)}
-              className="mt-2 text-lg text-gray-500 bg-transparent border-b-2 border-gray-300 focus:outline-none focus:border-indigo-600"
-            />
-          </div>
-
-          <p className="mt-2 text-lg text-gray-500">
-            {user?.email || "Correo no disponible"}
-          </p>
+      <div className="flex flex-row justify-center items-center w-[80%]">
+        {/*Imagen que podemos cambiar de perfil*/}
+        <div>
+          <label
+            htmlFor="profilePicture"
+            className="relative cursor-pointer group"
+          >
+            <div className="relative">
+              <div className={`w-64 h-64 rounded-full border-4 border-white shadow-xl transition-opacity group-hover:opacity-75 ${!picture ? 'bg-gray-300' : ''}`}>
+                {picture && (
+                  <img
+                    src={
+                      picture instanceof File
+                        ? URL.createObjectURL(picture)
+                        : picture
+                    }
+                    alt="Profile"
+                    className="object-cover w-full h-full rounded-full"
+                  />
+                )}
+              </div>
+              <div className="flex absolute inset-0 justify-center items-center bg-black bg-opacity-0 rounded-full transition-all group-hover:bg-opacity-30">
+                <span className="text-white opacity-0 transition-opacity group-hover:opacity-100">
+                  Cambiar foto
+                </span>
+              </div>
+            </div>
+          </label>
+          <input
+            type="file"
+            id="profilePicture"
+            className="hidden"
+            accept="image/*"
+            onChange={handlePicture}
+          />
         </div>
 
-        {/* Botón para guardar cambios */}
-        <button
-          onClick={() => onSave({ name, country, picture })}
-          className="px-6 py-3 mt-4 font-bold text-white bg-indigo-600 rounded-lg shadow-lg transition duration-200 hover:bg-indigo-700"
-        >
-          Guardar cambios
-        </button>
-      </hgroup>
+        {/*Información del usuario*/}
+        <hgroup className="flex flex-col flex-1">
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Tu nombre"
+            className="p-8 text-6xl font-bold text-right text-white bg-black bg-opacity-50 border-none backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+          <div className="flex flex-row justify-between w-[90%] self-center mb-6">
+            {/* Fecha de nacimiento con ícono de calendario */}
+            <div className="flex gap-2 items-center text-lg text-gray-500">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="lucide lucide-calendar"
+              >
+                <path d="M8 2v4" />
+                <path d="M16 2v4" />
+                <rect width="18" height="18" x="3" y="4" rx="2" />
+                <path d="M3 10h18" />
+              </svg>
+              {user?.birthday
+                ? `${user.birthday.day}/${user.birthday.month}/${user.birthday.year}`
+                : "No disponible"}
+            </div>
+
+            {/* País con ícono de ubicación */}
+            <div className="flex gap-2 items-center text-lg text-gray-500">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="lucide lucide-map-pin"
+              >
+                <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+              <input
+                type="text"
+                value={country}
+                onChange={(e) => setCountry(e.target.value)}
+                placeholder="Tu país"
+                className="text-lg text-gray-500 bg-transparent border-b border-gray-300 focus:outline-none focus:border-indigo-500"
+              />
+            </div>
+
+            <p className="mt-2 text-lg text-gray-500">
+              {user?.email || "Correo no disponible"}
+            </p>
+          </div>
+
+          {/* Botones de acción */}
+          <div className="flex flex-row gap-4 justify-center items-center">
+            <Link
+              to="/profile"
+              className="px-4 py-2 font-semibold text-white bg-gray-600 rounded-lg shadow-lg transition duration-200 hover:bg-gray-700 hover:shadow-xl"
+            >
+              Volver al perfil
+            </Link>
+            <button
+              onClick={() => onSave({ name, country, picture })}
+              className="px-4 py-2 font-semibold text-white bg-indigo-600 rounded-lg shadow-lg transition duration-200 hover:bg-indigo-700 hover:shadow-xl"
+            >
+              Guardar cambios
+            </button>
+          </div>
+        </hgroup>
+      </div>
     </header>
   );
 }

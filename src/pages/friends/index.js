@@ -93,136 +93,213 @@ export default function Friends() {
 
   return (
     <Shell>
-      <header className="relative flex items-end pb-8 mt-6 min-h-[550px]">
-        {/* Fondo difuminado */}
-        <img
-          src={user?.picture || "https://via.placeholder.com/1920x1080"}
-          alt="Background"
-          className="absolute top-0 left-0 right-0 object-cover w-full h-[450px] transform scale-105 blur-sm"
-        />
-
-        <div className="flex relative z-10 items-center space-x-6">
-          <img
-            src={user?.picture || "https://via.placeholder.com/150"}
-            alt={user?.name}
-            className="object-cover w-64 h-64 rounded-full border-4 border-white shadow-xl"
-          />
-          <hgroup className="flex-1">
-            <h1 className="p-8 text-6xl font-bold text-right text-white bg-black bg-opacity-50 backdrop-blur-sm">
-              Amigos de {user?.name}
-            </h1>
-          </hgroup>
-        </div>
-      </header>
-
-      <div className="p-6 mx-auto space-y-8 max-w-4xl">
-        {/* Sección para agregar amigos */}
-        <div>
-          <h2 className="mb-4 text-2xl font-bold">Agregar Amigo</h2>
-          <Separator />
-          <div className="grid grid-cols-1 gap-4 mt-4 md:grid-cols-2">
-            <div className="relative">
-              <label
-                htmlFor="friendName"
-                className="block mb-2 text-sm font-medium"
-              >
-                Nombre
-              </label>
-              <input
-                id="friendName"
-                type="text"
-                placeholder="Nombre del amigo"
-                value={newFriendName}
-                onChange={(e) => setNewFriendName(e.target.value)}
-                className="px-4 py-2 w-full rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+      <div className="p-8 pt-0 mx-auto">
+        <header className="w-full relative flex items-end justify-center min-h-[650px]">
+          {/* Fondo difuminado */}
+          <div
+            className={`absolute top-0 left-0 right-0 h-[500px] transform scale-105 blur-sm ${
+              !user?.picture ? "bg-gray-200" : ""
+            }`}
+          >
+            {user?.picture && (
+              <img
+                src={user.picture}
+                alt="Background"
+                className="object-cover w-full h-full"
               />
-            </div>
-            <div className="relative">
-              <label
-                htmlFor="friendEmail"
-                className="block mb-2 text-sm font-medium"
-              >
-                Email
-              </label>
-              <input
-                id="friendEmail"
-                type="email"
-                placeholder="Email del amigo"
-                value={newFriendEmail}
-                onChange={(e) => setNewFriendEmail(e.target.value)}
-                className="px-4 py-2 w-full rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-            </div>
-            <div className="col-span-full">
-              {(error || friendsError) && (
-                <div className="mt-2 text-sm text-red-500">
-                  {error || friendsError}
-                </div>
+            )}
+          </div>
+
+          <div className="flex flex-row justify-center items-center w-[80%] z-10">
+            <div
+              className={`w-64 h-64 rounded-full border-4 border-white shadow-xl ${
+                !user?.picture ? "bg-gray-300" : ""
+              }`}
+            >
+              {user?.picture && (
+                <img
+                  src={user.picture}
+                  alt={user?.name}
+                  className="object-cover w-full h-full rounded-full"
+                />
               )}
-              <button
-                onClick={handleAddFriend}
-                className="flex justify-center items-center px-4 py-2 mt-4 space-x-2 w-full text-white bg-indigo-600 rounded-lg hover:bg-indigo-700"
-              >
-                <UserPlus className="w-5 h-5" />
-                <span>Agregar Amigo</span>
-              </button>
+            </div>
+
+            {/*Información del usuario*/}
+            <hgroup className="flex flex-col flex-1">
+              <h1 className="p-8 text-6xl font-bold text-right text-white bg-black bg-opacity-50 backdrop-blur-sm">
+                Amigos de {user?.name}
+              </h1>
+              <div className="flex flex-row justify-between w-[90%] self-center">
+                {/* Fecha de nacimiento con ícono de calendario */}
+                <div className="flex gap-2 items-center text-lg text-gray-500">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="lucide lucide-calendar"
+                  >
+                    <path d="M8 2v4" />
+                    <path d="M16 2v4" />
+                    <rect width="18" height="18" x="3" y="4" rx="2" />
+                    <path d="M3 10h18" />
+                  </svg>
+                  {user?.birthday
+                    ? `${user.birthday.day}/${user.birthday.month}/${user.birthday.year}`
+                    : "No disponible"}
+                </div>
+
+                {/* País con ícono de ubicación */}
+                <div className="flex gap-2 items-center text-lg text-gray-500">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="lucide lucide-map-pin"
+                  >
+                    <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>
+                  {user?.country || "País no disponible"}
+                </div>
+
+                <p className="mt-2 text-lg text-gray-500">
+                  {user?.email || "Correo no disponible"}
+                </p>
+              </div>
+            </hgroup>
+          </div>
+        </header>
+
+        <div className="p-6 mx-auto space-y-8 max-w-4xl">
+          {/* Sección para agregar amigos */}
+          <div>
+            <h2 className="mb-4 text-2xl font-bold">Agregar Amigo</h2>
+            <Separator />
+            <div className="grid grid-cols-1 gap-4 mt-4 md:grid-cols-2">
+              <div className="relative">
+                <label
+                  htmlFor="friendName"
+                  className="block mb-2 text-sm font-medium"
+                >
+                  Nombre
+                </label>
+                <input
+                  id="friendName"
+                  type="text"
+                  placeholder="Nombre del amigo"
+                  value={newFriendName}
+                  onChange={(e) => setNewFriendName(e.target.value)}
+                  className="px-4 py-2 w-full rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+              <div className="relative">
+                <label
+                  htmlFor="friendEmail"
+                  className="block mb-2 text-sm font-medium"
+                >
+                  Email
+                </label>
+                <input
+                  id="friendEmail"
+                  type="email"
+                  placeholder="Email del amigo"
+                  value={newFriendEmail}
+                  onChange={(e) => setNewFriendEmail(e.target.value)}
+                  className="px-4 py-2 w-full rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+              <div className="col-span-full">
+                {(error || friendsError) && (
+                  <div className="mt-2 text-sm text-red-500">
+                    {error || friendsError}
+                  </div>
+                )}
+                <button
+                  onClick={handleAddFriend}
+                  className="flex justify-center items-center px-4 py-2 mt-4 space-x-2 w-full text-white bg-indigo-600 rounded-lg hover:bg-indigo-700"
+                >
+                  <UserPlus className="w-5 h-5" />
+                  <span>Agregar Amigo</span>
+                </button>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Sección de lista de amigos */}
-        <div>
-          <h2 className="mb-4 text-2xl font-bold">
-            Mis Amigos ({userFriends.length})
-          </h2>
-          <Separator />
-          <div className="mt-4">
-            <div className="relative mb-4">
-              <input
-                type="text"
-                placeholder="Buscar amigos..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="px-4 py-2 w-full rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-              <Search className="absolute top-3 right-3 text-gray-400" />
-            </div>
-
-            {userFriends.length === 0 ? (
-              <div className="text-center text-gray-500">
-                {searchTerm
-                  ? "No se encontraron amigos que coincidan con la búsqueda"
-                  : "No tienes amigos agregados aún"}
+          {/* Sección de lista de amigos */}
+          <div>
+            <h2 className="mb-4 text-2xl font-bold">
+              Mis Amigos ({userFriends.length})
+            </h2>
+            <Separator />
+            <div className="mt-4">
+              <div className="relative mb-4">
+                <input
+                  type="text"
+                  placeholder="Buscar amigos..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="px-4 py-2 w-full rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+                <Search className="absolute top-3 right-3 text-gray-400" />
               </div>
-            ) : (
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-2">
-                {userFriends.map((friend) => (
-                  <div
-                    key={friend.email}
-                    className="flex items-center p-4 space-x-4 bg-white rounded-lg shadow-md transition-shadow hover:shadow-lg"
-                  >
-                    <img
-                      src={friend.picture || "https://via.placeholder.com/150"}
-                      alt={friend.name}
-                      className="object-cover w-16 h-16 rounded-full"
-                    />
-                    <div className="flex-1">
-                      <h3 className="text-lg font-semibold">{friend.name}</h3>
-                      <p className="text-sm text-gray-500">{friend.email}</p>
-                    </div>
-                    <div className="flex space-x-2">
-                      <button
-                        onClick={() => handleRemoveFriend(friend.email)}
-                        className="text-red-500 transition-colors hover:text-red-700"
-                        title="Eliminar amigo"
+
+              {userFriends.length === 0 ? (
+                <div className="text-center text-gray-500">
+                  {searchTerm
+                    ? "No se encontraron amigos que coincidan con la búsqueda"
+                    : "No tienes amigos agregados aún"}
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-2">
+                  {userFriends.map((friend) => (
+                    <div
+                      key={friend.email}
+                      className="flex items-center p-4 space-x-4 bg-white rounded-lg shadow-md transition-shadow hover:shadow-lg"
+                    >
+                      <div
+                        className={`w-16 h-16 rounded-full ${
+                          !friend.picture ? "bg-gray-300" : ""
+                        }`}
                       >
-                        <UserMinus className="w-5 h-5" />
-                      </button>
+                        {friend.picture && (
+                          <img
+                            src={friend.picture}
+                            alt={friend.name}
+                            className="object-cover w-full h-full rounded-full"
+                          />
+                        )}
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-lg font-semibold">{friend.name}</h3>
+                        <p className="text-sm text-gray-500">{friend.email}</p>
+                      </div>
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={() => handleRemoveFriend(friend.email)}
+                          className="text-red-500 transition-colors hover:text-red-700"
+                          title="Eliminar amigo"
+                        >
+                          <UserMinus className="w-5 h-5" />
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            )}
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
