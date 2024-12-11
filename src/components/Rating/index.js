@@ -30,7 +30,9 @@ function Rating({
           className={`w-7 h-7 rounded-full border ${
             //Si el valor del botón es menor o igual al rating, le asignamos el color amarillo, de lo contrario, le asignamos el color gris
 
-            value <= rating ? "bg-yellow-400" : "bg-gray-300"
+            value <= rating
+              ? "bg-gradient-to-br from-pink-500 via-red-500 to-yellow-500"
+              : "bg-gray-300"
           }`}
           disabled={readonly}
         >

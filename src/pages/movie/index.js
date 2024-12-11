@@ -10,7 +10,7 @@ import "./carousel.css";
 import Rating from "../../components/Rating";
 import { Shell, Link, Separator } from "../../components";
 
-import { useMovie, useComments } from "../../hooks";
+import { useMovie, useComments, useUser } from "../../hooks";
 
 import Disney from "./icons/disney_plus.png";
 import Play from "./icons/google_play.png";
@@ -34,6 +34,8 @@ const poster = (movie) =>
 export default function Movie() {
   const { id } = useParams();
   const { movie, update } = useMovie(id);
+  //Recuperamos el user para saber si es admin o user normal y en base a su rol dar la posibilidad de ir a la página de editar o no
+  const { user } = useUser();
 
   return (
     <Shell>
@@ -52,14 +54,16 @@ export default function Movie() {
         <Back className="w-8 h-8" />
         <span>Volver</span>
       </Link>
-
-      <Link
-        variant="primary"
-        className="flex absolute top-4 right-8 gap-4 items-center px-2 py-2 text-white rounded-full"
-        to={`/movies/${id}/edit`}
-      >
-        <Edit className="w-8 h-8" />
-      </Link>
+      {/*Si es admin le dejamos ir a la página de editar movie*/}
+      {user && user.roles && user.roles.includes("ROLE_ADMIN") && (
+        <Link
+          variant="primary"
+          className="flex absolute top-4 right-8 gap-4 items-center px-2 py-2 text-white rounded-full"
+          to={`/movies/${id}/edit`}
+        >
+          <Edit className="w-8 h-8" />
+        </Link>
+      )}
 
       <div className="p-8 mx-auto w-full max-w-screen-2xl">
         <Header movie={movie} />
@@ -99,7 +103,9 @@ function Info({ movie }) {
         <h2 className="p-4 text-2xl font-bold text-white bg-gradient-to-br from-pink-500 via-red-500 to-yellow-500 shadow">
           Argumento
         </h2>
-        <p className="p-4 pt-8">{movie.overview}</p>
+        <p className="p-4 pt-8">
+          {movie.overview ? movie.overview : "El argumento no está disponible"}
+        </p>
       </div>
       <div className="text-right">
         <dl className="space-y-2">
@@ -118,11 +124,11 @@ function Info({ movie }) {
 }
 function View({ movie }) {
   return (
-    <div className="flex gap-8 mt-8 h-auto">
-      <div className="z-10 w-80 h-fit">
+    <div className="flex gap-8 mt-4 h-full items-end">
+      <div className="z-10 w-80 h-full">
         <Links movie={movie} />
       </div>
-      <div className="flex-1">
+      <div className="m-auto">
         <div
           style={{
             aspectRatio: "16/9",
@@ -484,7 +490,7 @@ function Trailer({ movie, ...props }) {
   if (trailer) return <ReactPlayer url={trailer.url} {...props} />;
   else
     return (
-      <div className="flex justify-center items-center w-full h-full">
+      <div className="flex justify-center w-full h-full items-end">
         <span className="p-8 text-xl font-semibold text-white bg-black backdrop-filter backdrop-blur">
           No se han encontrado trailers!
         </span>

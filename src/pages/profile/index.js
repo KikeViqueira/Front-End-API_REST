@@ -52,7 +52,7 @@ function Header({ user }) {
         <img
           src={user?.picture || "https://via.placeholder.com/1920x1080"}
           alt={user?.name}
-          className="object-cover relative w-64 h-64 rounded-full border-4 border-white shadow-xl"
+          className="object-cover relative w-64 h-64 rounded-full border-4 border-white shadow-xl "
         />
 
         {/*Información del usuario*/}

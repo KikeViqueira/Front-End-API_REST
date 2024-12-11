@@ -195,7 +195,7 @@ export default function Friends() {
                   : "No tienes amigos agregados aún"}
               </div>
             ) : (
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-2">
                 {userFriends.map((friend) => (
                   <div
                     key={friend.email}
@@ -211,7 +211,6 @@ export default function Friends() {
                       <p className="text-sm text-gray-500">{friend.email}</p>
                     </div>
                     <div className="flex space-x-2">
-                      <UserCheck className="text-green-500" />
                       <button
                         onClick={() => handleRemoveFriend(friend.email)}
                         className="text-red-500 transition-colors hover:text-red-700"
