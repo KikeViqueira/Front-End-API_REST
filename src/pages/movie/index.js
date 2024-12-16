@@ -19,6 +19,7 @@ import ITunes from "./icons/itunes.png";
 import Netflix from "./icons/netflix.png";
 import Prime from "./icons/prime_video.png";
 import Youtube from "./icons/youtube.png";
+import DefaultUserImage from "../../assets/user.png";
 
 const backdrop = (movie) => {
   const backdrop = movie?.resources?.find(
@@ -359,7 +360,7 @@ function CastMember({ person }) {
   return (
     <li className="overflow-hidden">
       <img
-        src={person?.picture}
+        src={person?.picture || DefaultUserImage}
         alt={`${person.name} profile`}
         className="object-cover object-top w-full rounded shadow"
         style={{ aspectRatio: "2/3" }}

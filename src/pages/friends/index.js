@@ -3,6 +3,7 @@ import { useUser } from "../../hooks";
 import { useFriends } from "../../hooks";
 import { UserPlus, Search, Mail, UserCheck, UserMinus } from "lucide-react";
 import { useEffect, useState } from "react";
+import DefaultUserImage from "../../assets/user.png";
 
 export default function Friends() {
   const { user, fetchUser } = useUser();
@@ -267,20 +268,24 @@ export default function Friends() {
                   {userFriends.map((friend) => (
                     <div
                       key={friend.email}
-                      className="flex items-center p-4 space-x-4 bg-white rounded-lg shadow-md transition-shadow hover:shadow-lg"
+                      className="flex items-center p-4 bg-white rounded-lg shadow-md space-x-4"
                     >
                       <div
                         className={`w-16 h-16 rounded-full ${
                           !friend.picture ? "bg-gray-300" : ""
                         }`}
                       >
-                        {friend.picture && (
-                          <img
-                            src={friend.picture}
-                            alt={friend.name}
-                            className="object-cover w-full h-full rounded-full"
-                          />
-                        )}
+                        <img
+                          src={
+                            friend.picture
+                              ? friend.picture.startsWith("data:image")
+                                ? friend.picture
+                                : friend.picture
+                              : DefaultUserImage
+                          }
+                          alt={friend.name}
+                          className="object-cover w-full h-full rounded-full"
+                        />
                       </div>
                       <div className="flex-1">
                         <h3 className="text-lg font-semibold">{friend.name}</h3>

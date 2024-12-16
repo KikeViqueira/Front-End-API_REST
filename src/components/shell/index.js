@@ -60,7 +60,7 @@ export function Shell({ children, className = "" }) {
   useHotkeys("ctrl+q", focus);
 
   return (
-    <section className="overflow-hidden min-h-screen">
+    <section className="overflow-hidden min-h-screen flex flex-col justify-between">
       <header
         className={`fixed bg-gradient-to-br from-pink-500 via-red-500 to-yellow-500
                               w-full h-16 flex justify-start space-x-12 items-center shadow px-4 z-50`}

@@ -109,10 +109,16 @@ function Header({ user, onSave }) {
   return (
     <header className="w-full relative flex items-end justify-center min-h-[650px]">
       {/* Fondo difuminado */}
-      <div className={`absolute top-0 left-0 right-0 h-[500px] transform scale-105 blur-sm ${!picture ? 'bg-gray-200' : ''}`}>
+      <div
+        className={`absolute top-0 left-0 right-0 h-[500px] transform scale-105 blur-sm ${
+          !picture ? "bg-gray-200" : ""
+        }`}
+      >
         {picture && (
           <img
-            src={picture instanceof File ? URL.createObjectURL(picture) : picture}
+            src={
+              picture instanceof File ? URL.createObjectURL(picture) : picture
+            }
             alt="Background"
             className="object-cover w-full h-full"
           />
@@ -127,7 +133,11 @@ function Header({ user, onSave }) {
             className="relative cursor-pointer group"
           >
             <div className="relative">
-              <div className={`w-64 h-64 rounded-full border-4 border-white shadow-xl transition-opacity group-hover:opacity-75 ${!picture ? 'bg-gray-300' : ''}`}>
+              <div
+                className={`w-64 h-64 rounded-full border-4 border-white shadow-xl transition-opacity group-hover:opacity-75 ${
+                  !picture ? "bg-gray-300" : ""
+                }`}
+              >
                 {picture && (
                   <img
                     src={
